@@ -6,57 +6,36 @@ declare global {
   }
 }
 
-export const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-59P7ZJ3QN6';
+export const GA_MEASUREMENT_ID = 'G-59P7ZJ3QN6';
 
-// Initialize Google Analytics
+// Initialize Google Analytics (GA is already loaded via HTML script tags)
 export const initGA = () => {
-  if (!GA_MEASUREMENT_ID || typeof window === 'undefined') {
-    console.warn('Google Analytics: Measurement ID not found');
+  if (typeof window === 'undefined') {
     return;
   }
-
-  // Dynamically load the Google Analytics script
-  const script = document.createElement('script');
-  script.async = true;
-  script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-  document.head.appendChild(script);
-
-  // Initialize gtag config once script loads
-  script.onload = () => {
-    if (window.gtag) {
-      window.gtag('config', GA_MEASUREMENT_ID, {
-        page_title: document.title,
-        page_location: window.location.href,
-        send_page_view: false, // We'll handle page views manually
-      });
-    }
-  };
-
-  // Initialize immediately if gtag is already available
-  if (window.gtag) {
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      page_title: document.title,
-      page_location: window.location.href,
-      send_page_view: false,
-    });
-  }
+  
+  // GA is already initialized via HTML script tags
+  console.log('Google Analytics ready with ID:', GA_MEASUREMENT_ID);
 };
 
 // Track page views
 export const trackPageView = (url: string, title?: string) => {
-  if (!GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) {
+  if (typeof window === 'undefined' || !window.gtag) {
     return;
   }
 
-  window.gtag('config', GA_MEASUREMENT_ID, {
+  window.gtag('event', 'page_view', {
+    page_title: title || document.title,
+    page_location: window.location.origin + url,
     page_path: url,
-    page_title: title,
   });
+  
+  console.log('GA Page view tracked:', url, title);
 };
 
 // Track custom events
 export const trackEvent = (action: string, category: string, label?: string, value?: number) => {
-  if (!GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) {
+  if (typeof window === 'undefined' || !window.gtag) {
     return;
   }
 
@@ -65,6 +44,8 @@ export const trackEvent = (action: string, category: string, label?: string, val
     event_label: label,
     value: value,
   });
+  
+  console.log('GA Event tracked:', action, category, label, value);
 };
 
 // Track wheel spins
