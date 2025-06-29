@@ -133,6 +133,9 @@ export const isDesktop = (): boolean => {
   return window.innerWidth >= 1024;
 };
 
+// Export analytics utilities
+export * from './analytics';
+
 export const getResponsiveSpinnerSize = (): number => {
   const width = window.innerWidth;
   if (width < 640) return 250; // Mobile

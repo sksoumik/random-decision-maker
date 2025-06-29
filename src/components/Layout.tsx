@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, Info, HelpCircle, Shield, FileText, BookOpen } from 'lucide-react';
+import { trackNavigation, trackPageView } from '../utils/analytics';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +9,11 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  
+  // Track page views
+  React.useEffect(() => {
+    trackPageView(location.pathname, document.title);
+  }, [location.pathname]);
   
   const navigation = [
     { name: 'Home', href: '/', icon: Home },
@@ -40,6 +46,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <Link
                       key={item.name}
                       to={item.href}
+                      onClick={() => trackNavigation(item.name)}
                       className={`px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center space-x-1 ${
                         isActive
                           ? (isHomePage ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-800')

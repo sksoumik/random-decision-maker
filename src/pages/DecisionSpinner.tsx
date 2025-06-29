@@ -12,7 +12,7 @@ import { useSpinner } from '../hooks/useSpinner';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { Option, HistoryEntry } from '../types';
 import { STORAGE_KEYS, DEFAULT_OPTION_COLORS } from '../constants';
-import { createOption, getResponsiveSpinnerSize } from '../utils';
+import { createOption, getResponsiveSpinnerSize, trackSpin, trackOptionAction } from '../utils';
 
 const defaultOptions: Option[] = [
   createOption('Pizza', DEFAULT_OPTION_COLORS[0]),
@@ -94,6 +94,9 @@ const DecisionSpinner: React.FC = () => {
         totalOptions: options.length
       };
       setHistory(prev => [historyEntry, ...prev.slice(0, 19)]); // Keep last 20 results
+      
+      // Track the actual winner selected
+      trackSpin(options.length, winner.text);
     }
   }, [winner, isSpinning, options.length]);
 
@@ -123,6 +126,16 @@ const DecisionSpinner: React.FC = () => {
   };
 
   const handleOptionsChange = (newOptions: Option[]) => {
+    const oldCount = options.length;
+    const newCount = newOptions.length;
+    
+    // Track option changes
+    if (newCount > oldCount) {
+      trackOptionAction('add', newCount);
+    } else if (newCount < oldCount) {
+      trackOptionAction('remove', newCount);
+    }
+    
     updateOptions(newOptions);
     if (winner) {
       reset();
@@ -138,6 +151,7 @@ const DecisionSpinner: React.FC = () => {
   };
   
   const handleClearAllOptions = () => {
+    trackOptionAction('clear', 0);
     updateOptions([]); // Clear all options
     reset();
     setShowWinner(false);
