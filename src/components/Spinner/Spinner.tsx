@@ -1,16 +1,20 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useImperativeHandle, forwardRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Option, SpinnerProps } from '../../types';
+import { SpinnerProps } from '../../types';
 import { DEFAULT_SPINNER_SIZE } from '../../constants';
 import { getResponsiveSpinnerSize } from '../../utils';
 
-const Spinner: React.FC<SpinnerProps> = ({
+export interface SpinnerRef {
+  spin: (targetAngle?: number) => void;
+}
+
+const Spinner = forwardRef<SpinnerRef, SpinnerProps>(({
   options,
   onSpinComplete,
   config,
   size,
   disabled = false,
-}) => {
+}, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentAngle, setCurrentAngle] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -28,11 +32,7 @@ const Spinner: React.FC<SpinnerProps> = ({
     return () => window.removeEventListener('resize', handleResize);
   }, [size]);
 
-  useEffect(() => {
-    drawSpinner();
-  }, [options, spinnerSize]);
-
-  const drawSpinner = () => {
+  const drawSpinner = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || options.length === 0) return;
 
@@ -105,15 +105,20 @@ const Spinner: React.FC<SpinnerProps> = ({
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 3;
     ctx.stroke();
-  };
+  }, [options, spinnerSize]);
 
-  const spin = async (targetAngle: number) => {
-    if (isAnimating || disabled) return;
+  useEffect(() => {
+    drawSpinner();
+  }, [drawSpinner]);
+
+  const spin = async (targetAngle?: number) => {
+    if (isAnimating || disabled || options.length < 2) return;
 
     setIsAnimating(true);
     const duration = config?.duration || 3000;
     const startAngle = currentAngle;
-    const totalRotation = targetAngle + (360 * (config?.minSpins || 5));
+    const finalTargetAngle = targetAngle || Math.random() * 360;
+    const totalRotation = finalTargetAngle + (360 * (config?.minSpins || 5));
     
     const animate = (progress: number) => {
       const easeOut = 1 - Math.pow(1 - progress, 3);
@@ -141,12 +146,16 @@ const Spinner: React.FC<SpinnerProps> = ({
         const winnerIndex = Math.floor((360 - normalizedAngle + sectionAngle / 2) / sectionAngle) % options.length;
         
         setIsAnimating(false);
-        onSpinComplete(options[winnerIndex]);
+        onSpinComplete?.(options[winnerIndex]);
       }
     };
 
     requestAnimationFrame(animationFrame);
   };
+
+  useImperativeHandle(ref, () => ({
+    spin
+  }));
 
   if (options.length === 0) {
     return (
@@ -193,7 +202,7 @@ const Spinner: React.FC<SpinnerProps> = ({
           animate={{ scale: 1 }}
           exit={{ scale: 0 }}
           transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-          onClick={() => !disabled && spin(Math.random() * 360)}
+          onClick={() => !disabled && spin()}
         />
       </AnimatePresence>
       
@@ -207,6 +216,6 @@ const Spinner: React.FC<SpinnerProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default Spinner;

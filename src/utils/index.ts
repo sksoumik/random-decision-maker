@@ -45,6 +45,13 @@ export const createOption = (text: string, color?: string): Option => {
   };
 };
 
+export const reassignColors = (options: Option[]): Option[] => {
+  return options.map((option, index) => ({
+    ...option,
+    color: DEFAULT_OPTION_COLORS[index % DEFAULT_OPTION_COLORS.length]
+  }));
+};
+
 export const calculateSpinAngle = (
   optionIndex: number,
   totalOptions: number,
@@ -83,7 +90,7 @@ export const formatError = (error: unknown): string => {
   return ERROR_MESSAGES.GENERAL_ERROR;
 };
 
-export const debounce = <T extends (...args: any[]) => any>(
+export const debounce = <T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void => {

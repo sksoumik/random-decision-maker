@@ -42,7 +42,7 @@ const AdUnit: React.FC<AdUnitProps> = ({ placement, className = '', style }) => 
       // Cleanup ad unit when component unmounts
       adsService.removeAdUnit(adConfig.containerId);
     };
-  }, []);
+  }, [adConfig.containerId, adConfig.adSlot, adConfig.adFormat, adsService]);
 
   // Don't render ads in development unless explicitly enabled
   if (import.meta.env.DEV && import.meta.env.VITE_ENABLE_ADS !== 'true') {

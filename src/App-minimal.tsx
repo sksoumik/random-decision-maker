@@ -83,9 +83,26 @@ function App() {
               margin: '5px 0',
               backgroundColor: '#f8f9fa',
               borderRadius: '5px',
-              border: '1px solid #dee2e6'
+              border: '1px solid #dee2e6',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
             }}>
               {option}
+              <button
+                onClick={() => setOptions(options.filter((_, i) => i !== index))}
+                style={{
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  padding: '4px 8px',
+                  borderRadius: '3px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                Remove
+              </button>
             </div>
           ))}
           

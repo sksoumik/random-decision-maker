@@ -14,9 +14,26 @@ export const DEFAULT_CELEBRATION_CONFIG: CelebrationConfig = {
 };
 
 export const DEFAULT_OPTION_COLORS = [
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD',
-  '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA',
-  '#F1948A', '#85C1E9', '#F4D03F', '#A569BD', '#5DADE2', '#58D68D',
+  '#FF6B6B', // Bright Red
+  '#4ECDC4', // Turquoise
+  '#45B7D1', // Sky Blue
+  '#96CEB4', // Mint Green
+  '#FFEAA7', // Light Yellow
+  '#DDA0DD', // Plum
+  '#FF9F43', // Orange
+  '#6C5CE7', // Purple
+  '#2ECC71', // Emerald Green
+  '#E17055', // Coral
+  '#FD79A8', // Pink
+  '#00B894', // Teal
+  '#FDCB6E', // Golden Yellow
+  '#A29BFE', // Lavender
+  '#FF7675', // Salmon
+  '#74B9FF', // Light Blue
+  '#00CEC9', // Cyan
+  '#55A3FF', // Blue
+  '#E84393', // Magenta
+  '#F39C12', // Amber
 ];
 
 export const MIN_OPTIONS = 2;

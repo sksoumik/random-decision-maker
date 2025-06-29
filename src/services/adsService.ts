@@ -78,8 +78,8 @@ export class AdsService {
 
     try {
       // Push ad to AdSense
-      (window as any).adsbygoogle = (window as any).adsbygoogle || [];
-      (window as any).adsbygoogle.push({});
+      (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle = (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || [];
+      (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle.push({});
       
       this.adUnits.push(containerId);
       console.log(`Ad unit created in container: ${containerId}`);
@@ -90,8 +90,9 @@ export class AdsService {
 
   public refreshAds(): void {
     try {
-      if ((window as any).adsbygoogle && (window as any).adsbygoogle.loaded) {
-        (window as any).adsbygoogle.push({});
+      const adsbyGoogle = (window as unknown as { adsbygoogle?: { loaded?: boolean, push: (arg: unknown) => void } }).adsbygoogle;
+      if (adsbyGoogle && adsbyGoogle.loaded) {
+        adsbyGoogle.push({});
       }
     } catch (error) {
       console.error('Failed to refresh ads:', error);

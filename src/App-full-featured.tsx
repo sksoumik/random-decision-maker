@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Confetti from 'react-confetti';
 
 interface Option {
@@ -51,12 +51,12 @@ function App() {
   }, []);
 
   // Get responsive spinner size
-  const getSpinnerSize = () => {
+  const getSpinnerSize = useCallback(() => {
     if (windowSize.width < 480) return 280; // Small mobile
     if (windowSize.width < 768) return 320; // Large mobile
     if (windowSize.width < 1024) return 350; // Tablet
     return 400; // Desktop
-  };
+  }, [windowSize.width]);
 
   const addOption = () => {
     if (newOption.trim() && !options.find(opt => opt.text.toLowerCase() === newOption.trim().toLowerCase())) {
@@ -88,7 +88,7 @@ function App() {
     setHistory([]);
   };
 
-  const drawSpinner = () => {
+  const drawSpinner = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -220,12 +220,12 @@ function App() {
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2;
     ctx.stroke();
-  };
+  }, [options, getSpinnerSize, isMobile]);
 
 
   useEffect(() => {
     drawSpinner();
-  }, [options, windowSize]);
+  }, [drawSpinner]);
 
   const spin = () => {
     if (isSpinning || options.length === 0 || options.length < 2) return;
@@ -541,7 +541,7 @@ function App() {
                         <div className="flex-1">
                           <div className="text-white font-semibold text-sm">{entry.winner.text}</div>
                           <div className="text-white/50 text-xs">
-                            {entry.timestamp.toLocaleTimeString()} • {entry.totalOptions} options
+                            {new Date(entry.timestamp).toLocaleTimeString()} • {entry.totalOptions} options
                           </div>
                         </div>
                       </div>
@@ -770,7 +770,7 @@ function App() {
                         <div className="flex-1">
                           <div className="text-white font-semibold text-lg">{entry.winner.text}</div>
                           <div className="text-white/50 text-sm">
-                            {entry.timestamp.toLocaleTimeString()} • {entry.totalOptions} options available
+                            {new Date(entry.timestamp).toLocaleTimeString()} • {entry.totalOptions} options available
                           </div>
                         </div>
                       </div>

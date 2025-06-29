@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Confetti from 'react-confetti';
 
 interface Option {
@@ -45,7 +45,7 @@ function App() {
     }
   };
 
-  const drawSpinner = () => {
+  const drawSpinner = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas || options.length === 0) return;
 
@@ -101,11 +101,11 @@ function App() {
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 3;
     ctx.stroke();
-  };
+  }, [options]);
 
   useEffect(() => {
     drawSpinner();
-  }, [options]);
+  }, [drawSpinner]);
 
   const spin = () => {
     if (isSpinning || options.length < 2) return;
@@ -255,7 +255,7 @@ function App() {
             
             {/* Options List */}
             <div className="space-y-3 max-h-80 overflow-y-auto">
-              {options.map((option, index) => (
+              {options.map((option) => (
                 <div 
                   key={option.id} 
                   className="flex items-center gap-4 p-4 bg-white/10 rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-200 transform hover:scale-102"

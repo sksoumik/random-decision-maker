@@ -28,10 +28,17 @@ export interface CelebrationConfig {
 
 export interface SpinnerProps {
   options: Option[];
-  onSpinComplete: (winner: Option) => void;
+  onSpinComplete?: (winner?: Option) => void;
   config?: Partial<SpinnerConfig>;
   size?: number;
   disabled?: boolean;
+}
+
+export interface HistoryEntry {
+  id: string;
+  winner: Option;
+  timestamp: Date;
+  totalOptions: number;
 }
 
 export interface OptionsManagerProps {
@@ -39,6 +46,9 @@ export interface OptionsManagerProps {
   onOptionsChange: (options: Option[]) => void;
   maxOptions?: number;
   minOptions?: number;
+  history?: HistoryEntry[];
+  onClearHistory?: () => void;
+  onClearAllOptions?: () => void;
 }
 
 export interface WinnerAnnouncementProps {
